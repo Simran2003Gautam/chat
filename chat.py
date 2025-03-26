@@ -1,7 +1,8 @@
 import random
 import json
-
 import torch
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 from model import NeuralNet
 from nltk_utils import bag_of_words, tokenize
@@ -48,14 +49,29 @@ def get_response(msg):
     return "I do not understand..."
 
 
-if __name__ == "__main__":
-    print("Let's chat! (type 'quit' to exit)")
-    while True:
-        # sentence = "do you use credit cards?"
-        sentence = input("You: ")
-        if sentence == "quit":
-            break
 
-        resp = get_response(sentence)
-        print(resp)
+app = Flask(__name__)
+
+CORS(app)
+
+@app.route("/predict", methods=["POST"])
+def chat():
+    data = request.get_json()
+    print(data)
+    response = get_response(data["message"])
+    return jsonify({
+            "data": response
+        }), 200
+    
+if (__name__) == "__main__":
+    # print("Let's chat! (type 'quit' to exit)")
+    # while True:
+    #     # sentence = "do you use credit cards?"
+    #     sentence = input("You: ")
+    #     if sentence == "quit":
+    #         break
+
+    #     resp = get_response(sentence)
+    #     print(resp)
+    app.run(debug=True)
 
